@@ -34,10 +34,12 @@ class Listener(StreamListener):
 
 
 def tweet_stream():
-    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-    auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
-    twitterStream = Stream(auth, Listener())
-    twitterStream.filter(track=TRACK_KEYWORD_SET)
+    with open('config.json') as conf:
+        config = json.load(conf)
+        auth = OAuthHandler(config['CONSUMER_KEY'], config['CONSUMER_SECRET'])
+        auth.set_access_token(config['ACCESS_TOKEN_KEY'], config['ACCESS_TOKEN_SECRET'])
+        twitterStream = Stream(auth, Listener())
+        twitterStream.filter(track=config['TRACK_KEYWORD_SET'])
 
 
 def start_scheduler():
