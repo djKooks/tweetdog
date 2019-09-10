@@ -7,13 +7,8 @@ routes = web.RouteTableDef()
 
 @routes.get('/')
 async def index(request):
-    return web.Response(text='Hello AIOHTTP')
-
-async def coro(timeout):
-    await asyncio.sleep(timeout)
-    print('spawning')
-
-@routes.get('/handler')
-async def handler(request):
-    await spawn(request, coro(2))
-    return web.Response()
+    async with request.app['db'].acquire() as conn:
+        cursor = await conn.execute(db.tweets.select())
+        records = await cursor.fetchall()
+        print(records)
+        return web.Response(text='Hello AIOHTTP')
