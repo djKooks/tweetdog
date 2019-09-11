@@ -1,45 +1,53 @@
-import time
 import atexit
+import asyncio
+import json
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
-import time
-import json
+
+from dateutil import parser
+
+from .db import update_tweet
 
 
 class Listener(StreamListener):
     
     def on_data(self, data):
         all_data = json.loads(data)
+        self.__write_db__(all_data)
         
-        print('============================================')
-        if all_data['truncated'] == True:
-            print(all_data['extended_tweet']['full_text'])
-        else:
-            print(all_data['text'])
-        # print(all_data['user']['screen_name'])
-        print(all_data['user']['location'])
-        # print(all_data['created_at'])
-        if 'urls' in all_data['entities'] and len(all_data['entities']['urls']) > 0:
-            print(all_data['entities']['urls'][0]['url'])
-
-        time.sleep(3)
         return True
 
     def on_error(self, status):
         print(status)
 
+    def __write_db__(self, all_data):
+        tweet_text = ''
+        if all_data['truncated']:
+            tweet_text = all_data['extended_tweet']['full_text']
+        else:
+            tweet_text = all_data['text']
+        
+        created_dt= parser.parse(all_data['created_at'])
+        update_tweet(
+            tweet_text,
+            created_dt.strftime('%Y-%m-%d %H:%M:%S')
+        )
+        
+        if 'urls' in all_data['entities'] and len(all_data['entities']['urls']) > 0:
+            print(all_data['entities']['urls'][0]['url'])
+
 
 def tweet_stream():
-    with open('config.json') as conf:
+    with open('server/config.json') as conf:
         config = json.load(conf)
         auth = OAuthHandler(config['CONSUMER_KEY'], config['CONSUMER_SECRET'])
         auth.set_access_token(config['ACCESS_TOKEN_KEY'], config['ACCESS_TOKEN_SECRET'])
         twitterStream = Stream(auth, Listener())
-        twitterStream.filter(track=config['TRACK_KEYWORD_SET'])
+        twitterStream.filter(track=config['TRACK_KEYWORD_SET'], is_async=True)
 
 
 def start_scheduler():
