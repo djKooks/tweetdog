@@ -14,18 +14,34 @@ tweets = Table(
     'tweets', meta,
     Column('id', Integer, primary_key=True),
     Column('tweet_text', String(512), nullable=False),
-    Column('pub_date', DateTime, nullable=False)
+    Column('tweet_link', String(128), nullable=False),
+    Column('user_id', String(32), nullable=False),
+    Column('user_name', String(64), nullable=False),
+    Column('user_screen_name', String(64), nullable=False),
+    Column('user_profile_url', String(128)),
+    Column('created_date', DateTime, nullable=False)
 )
 
 db_url = DB_URL.format(**config['mysql'])
 engine = create_engine(db_url)
 
 
-def update_tweet(tweet_text, pub_date):
+def update_tweet(tweet_text,
+                tweet_link,
+                user_id,
+                user_name,
+                user_screen_name,
+                user_profile_url,
+                created_date):
     conn = engine.connect()
     conn.execute(
         tweets.insert().values(
             tweet_text=tweet_text,
-            pub_date=pub_date
+            tweet_link=tweet_link,
+            user_id=user_id,
+            user_name=user_name,
+            user_screen_name=user_screen_name,
+            user_profile_url=user_profile_url,
+            created_date=created_date
         )
     )
