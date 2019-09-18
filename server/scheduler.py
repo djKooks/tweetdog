@@ -8,7 +8,7 @@ from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
 
-from dateutil import parser
+from dateutil import parser, tz
 
 from .db import update_tweet
 
@@ -31,11 +31,23 @@ class Listener(StreamListener):
         else:
             tweet_text = all_data['text']
         
-        created_dt= parser.parse(all_data['created_at'])
+        created_dt = parser.parse(all_data['created_at']).astimezone(tz.gettz('Asia/Tokyo'))
+        user = all_data['user']
+        
+        tweet_link = ''
+        if 'urls' in all_data['entities'] and len(all_data['entities']['urls']) > 0:
+            tweet_link = all_data['entities']['urls'][0]['url']
+        
         update_tweet(
             tweet_text,
-            created_dt.strftime('%Y-%m-%d %H:%M:%S')
+            tweet_link,
+            user['id_str'],
+            user['name'],
+            user['screen_name'],
+            user['profile_image_url'],
+            created_dt
         )
+        print('update tweet!')
         
         if 'urls' in all_data['entities'] and len(all_data['entities']['urls']) > 0:
             print(all_data['entities']['urls'][0]['url'])
