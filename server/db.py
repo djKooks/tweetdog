@@ -24,7 +24,20 @@ tweets = Table(
 
 db_url = DB_URL.format(**config['mysql'])
 engine = create_engine(db_url)
+conn = engine.connect()
 
+
+def fetch_tweet(keyword=None):
+    if keyword is None:
+        result = conn.execute(
+            'SELECT * from tweets'
+        )
+    else:
+        result = conn.execute(
+            tweets.select(tweets.c.tweet_text.contains(keyword))    
+        )
+        
+    return result
 
 def update_tweet(tweet_text,
                 tweet_link,
@@ -33,7 +46,7 @@ def update_tweet(tweet_text,
                 user_screen_name,
                 user_profile_url,
                 created_date):
-    conn = engine.connect()
+    
     conn.execute(
         tweets.insert().values(
             tweet_text=tweet_text,

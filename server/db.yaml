@@ -1,7 +1,7 @@
 mysql:
   database: tweet_search
-  user: 
-  password: 
+  user: jung
+  password: password
   host: 127.0.0.1
   port: 3306
   minsize: 1
