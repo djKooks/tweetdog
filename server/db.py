@@ -1,3 +1,4 @@
+import json
 from sqlalchemy import (
     create_engine, MetaData, Table, Column, ForeignKey,
     Integer, String, DateTime, 
@@ -27,6 +28,17 @@ engine = create_engine(db_url)
 conn = engine.connect()
 
 
+def _as_dict(row):
+    result = dict()
+    for key in row.keys():
+        if key == 'created_date':
+            created = getattr(row, key)
+            result[key] = created.strftime("%Y/%m/%d, %H:%M:%S")
+        else:
+            result[key] = getattr(row, key)
+
+    return result
+
 def fetch_tweet(keyword=None):
     if keyword is None:
         result = conn.execute(
@@ -37,7 +49,7 @@ def fetch_tweet(keyword=None):
             tweets.select(tweets.c.tweet_text.contains(keyword))    
         )
         
-    return result
+    return [_as_dict(row) for row in result]
 
 def update_tweet(tweet_text,
                 tweet_link,
