@@ -17,20 +17,27 @@ export default new Vuex.Store({
   state: {
     count: 0,
     tweets: [],
+    tweetsWithKw: [],
   },
   getters: {
     tweets(state) {
       return state.tweets
     },
+    tweetsWithKw(state) {
+      return state.tweetsWithKw
+    },
   },
   mutations: {
     updateTweets(state, payload) {
       Vue.set(state, 'tweets', payload)
+    },
+    updateTweetsWithKw(state, payload) {
+      Vue.set(state, 'tweetsWithKw', payload)
     }
   },
   actions: {
     async getRecentTweets({ commit, state }) {
-      axios
+      await axios
         .get(RECENT_TWEETS_REQUEST)
         .then((resp) => {
           commit('updateTweets', resp.data)
@@ -38,7 +45,19 @@ export default new Vuex.Store({
         .catch((err) => {
           console.error(err)
         })
-      
+
+      await axios
+        .get(RECENT_TWEETS_REQUEST, {
+          params: {
+            keyword: '新宿'
+          }
+        })
+        .then((resp) => {
+          commit('updateTweetsWithKw', resp.data)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
     }
   }
 })
