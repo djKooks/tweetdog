@@ -18,10 +18,16 @@ async def index(request):
 
 @routes.get('/api/recent-tweets')
 async def get_recent_tweets(request):
-    # print('get recent tweets:' + request)
-    data = fetch_tweet('100')
+    kwd = None
+
+    if 'keyword' in request.rel_url.query:
+        kwd = request.rel_url.query['keyword']
+
+    data = fetch_tweet(kwd)
     resp = {
-        "result": "OK"
+        'result': 'OK',
+        'data': data
     }
-    return web.json_response(resp)
+
+    return web.json_response(data)
 

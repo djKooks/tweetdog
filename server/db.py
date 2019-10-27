@@ -42,11 +42,14 @@ def _as_dict(row):
 def fetch_tweet(keyword=None):
     if keyword is None:
         result = conn.execute(
-            'SELECT * from tweets'
+            'SELECT * from tweets ORDER BY created_date DESC LIMIT 10'
         )
     else:
         result = conn.execute(
-            tweets.select(tweets.c.tweet_text.contains(keyword))    
+            tweets.select(
+                tweets.c.tweet_text.contains(keyword))
+                                    .order_by(tweets.c.created_date.desc())
+                                    .limit(10)
         )
         
     return [_as_dict(row) for row in result]

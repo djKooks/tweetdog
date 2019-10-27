@@ -47,10 +47,6 @@ class Listener(StreamListener):
             user['profile_image_url'],
             created_dt
         )
-        print('update tweet!')
-        
-        if 'urls' in all_data['entities'] and len(all_data['entities']['urls']) > 0:
-            print(all_data['entities']['urls'][0]['url'])
 
 
 def tweet_stream():
