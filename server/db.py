@@ -1,9 +1,13 @@
+from datetime import datetime, timedelta
 import json
 from sqlalchemy import (
     create_engine, MetaData, Table, Column, ForeignKey,
     Integer, String, DateTime, 
 )
 
+from sqlalchemy.orm import sessionmaker
+
+from .model import Base, Tweets
 from .settings import config
 
 
@@ -11,20 +15,14 @@ DB_URL = "mysql+pymysql://{user}:{password}@{host}:{port}/{database}"
 
 meta = MetaData()
 
-tweets = Table(
-    'tweets', meta,
-    Column('id', Integer, primary_key=True),
-    Column('tweet_text', String(512), nullable=False),
-    Column('tweet_link', String(128), nullable=False),
-    Column('user_id', String(32), nullable=False),
-    Column('user_name', String(64), nullable=False),
-    Column('user_screen_name', String(64), nullable=False),
-    Column('user_profile_url', String(128)),
-    Column('created_date', DateTime, nullable=False)
-)
-
 db_url = DB_URL.format(**config['mysql'])
 engine = create_engine(db_url)
+Base.metadata.create_all(engine)
+
+Session = sessionmaker()
+Session.configure(bind=engine)
+session = Session()
+
 conn = engine.connect()
 
 
@@ -54,6 +52,16 @@ def fetch_tweet(keyword=None):
         
     return [_as_dict(row) for row in result]
 
+
+def fetch_by_time():
+    since = datetime.now() - timedelta(hours=1)
+    q = (
+        session.query(Tweets).filter(tweets_session.created_date < since)
+    )
+    print(q)
+    return
+
+
 def update_tweet(tweet_text,
                 tweet_link,
                 user_id,
@@ -62,14 +70,14 @@ def update_tweet(tweet_text,
                 user_profile_url,
                 created_date):
     
-    conn.execute(
-        tweets.insert().values(
-            tweet_text=tweet_text,
-            tweet_link=tweet_link,
-            user_id=user_id,
-            user_name=user_name,
-            user_screen_name=user_screen_name,
-            user_profile_url=user_profile_url,
-            created_date=created_date
-        )
+    session.add(Tweets(
+        tweet_text=tweet_text,
+        tweet_link=tweet_link,
+        user_id=user_id,
+        user_name=user_name,
+        user_screen_name=user_screen_name,
+        user_profile_url=user_profile_url,
+        created_date=created_date)
     )
+
+    session.commit()
