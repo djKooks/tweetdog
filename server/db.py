@@ -53,13 +53,10 @@ def fetch_tweet(keyword=None):
     return [_as_dict(row) for row in result]
 
 
-def fetch_by_time():
-    since = datetime.now() - timedelta(hours=1)
-    q = (
-        session.query(Tweets).filter(tweets_session.created_date < since)
-    )
-    print(q)
-    return
+def fetch_by_time(hour=12):
+    since = datetime.now() - timedelta(hours=hour)
+    result = session.query(Tweets).filter(Tweets.created_date > since).order_by(Tweets.created_date.desc())
+    return [_as_dict(row) for row in result]
 
 
 def update_tweet(tweet_text,

@@ -32,3 +32,6 @@ class Tweets(Base):
         self.user_screen_name = user_screen_name
         self.user_profile_url = user_profile_url
         self.created_date = created_date
+
+    def __repr__(self):
+        return "<Tweets('%s', '%s', '%s')>" % (self.user_name, self.created_date, self.tweet_text)

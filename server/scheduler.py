@@ -10,7 +10,7 @@ from tweepy.streaming import StreamListener
 
 from dateutil import parser, tz
 
-from .db import update_tweet
+from .db import update_tweet, fetch_by_time
 
 
 class Listener(StreamListener):

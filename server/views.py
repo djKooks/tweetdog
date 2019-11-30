@@ -3,18 +3,11 @@ import json
 from aiohttp import web
 from aiojobs.aiohttp import setup, spawn
 
-from .db import fetch_tweet
+from .db import fetch_tweet, fetch_by_time
 
 
 routes = web.RouteTableDef()
 
-@routes.get('/')
-async def index(request):
-    async with request.app['db'].acquire() as conn:
-        cursor = await conn.execute(db.tweets.select())
-        records = await cursor.fetchall()
-        print(records)
-        return web.Response(text='Hello AIOHTTP')
 
 @routes.get('/api/recent-tweets')
 async def get_recent_tweets(request):
@@ -30,4 +23,9 @@ async def get_recent_tweets(request):
     }
 
     return web.json_response(data)
+
+@routes.get('/api/test')
+async def get_test_result(request):
+    fetch_by_time()
+    return web.Response("TEST")
 
