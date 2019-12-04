@@ -60,6 +60,7 @@ def fetch_by_time(hour=12):
 
 
 def update_tweet(tweet_text,
+                tweet_word_set,
                 tweet_link,
                 user_id,
                 user_name,
@@ -69,6 +70,7 @@ def update_tweet(tweet_text,
     
     session.add(Tweets(
         tweet_text=tweet_text,
+        tweet_word_set=tweet_word_set,
         tweet_link=tweet_link,
         user_id=user_id,
         user_name=user_name,

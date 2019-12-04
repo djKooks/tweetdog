@@ -1,5 +1,4 @@
 from aiohttp import web
-from aiojobs.aiohttp import setup
 import aiohttp_cors
 
 from .scheduler import start_scheduler, tweet_stream

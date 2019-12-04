@@ -10,6 +10,8 @@ from tweepy.streaming import StreamListener
 
 from dateutil import parser, tz
 
+from nagisa import extract
+
 from .db import update_tweet, fetch_by_time
 
 
@@ -37,9 +39,14 @@ class Listener(StreamListener):
         tweet_link = ''
         if 'urls' in all_data['entities'] and len(all_data['entities']['urls']) > 0:
             tweet_link = all_data['entities']['urls'][0]['url']
+
+        # TODO: more elaborate extract logic
+        words = extract(tweet_text, extract_postags=['名詞', '形状詞', '動詞', '感動詞'])
+        tweet_word_set = [word for word in words.words if not word.startswith('@') and not word.isnumeric()]
         
         update_tweet(
             tweet_text,
+            ','.join(tweet_word_set),
             tweet_link,
             user['id_str'],
             user['name'],

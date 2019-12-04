@@ -1,7 +1,6 @@
 import asyncio
 import json
 from aiohttp import web
-from aiojobs.aiohttp import setup, spawn
 
 from .db import fetch_tweet, fetch_by_time
 

@@ -10,6 +10,7 @@ class Tweets(Base):
 
     id = Column(Integer, primary_key=True)
     tweet_text = Column(String(512), nullable=False)
+    tweet_word_set = Column(String(1024))
     tweet_link = Column(String(128), nullable=False)
     user_id = Column(String(32), nullable=False)
     user_name = Column(String(64), nullable=False)
@@ -17,8 +18,9 @@ class Tweets(Base):
     user_profile_url = Column(String(128))
     created_date = Column(DateTime, nullable=False)
 
-    def __init__(self, 
-                tweet_text, 
+    def __init__(self,
+                tweet_text,
+                tweet_word_set, 
                 tweet_link, 
                 user_id, 
                 user_name, 
@@ -26,6 +28,7 @@ class Tweets(Base):
                 user_profile_url, 
                 created_date):
         self.tweet_text = tweet_text
+        self.tweet_word_set = tweet_word_set
         self.tweet_link = tweet_link
         self.user_id = user_id
         self.user_name = user_name
