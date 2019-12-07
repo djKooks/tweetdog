@@ -8,8 +8,6 @@ from server.db import Base
 DB_URL = "mysql+pymysql://{user}:{password}@{host}:{port}/{database}"
 
 def create_tables(engine):
-    # meta = MetaData()
-    # meta.create_all(bind=engine, tables=[tweets])
     Base.metadata.create_all(engine)
 
 db_url = DB_URL.format(**config['mysql'])

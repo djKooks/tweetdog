@@ -23,11 +23,14 @@ export default new Vuex.Store({
     tweetDayCount: 0,
     tweetWeekCount: 0,
     weeklyTweet: {},
-    tweetWords: {}
+    tweetWords: []
   },
   getters: {
     tweets(state) {
       return state.tweets
+    },
+    tweetWords(state) {
+      return state.tweetWords
     },
     weeklyTweet(state) {
       return state.weeklyTweet
@@ -43,6 +46,9 @@ export default new Vuex.Store({
     updateTweets(state, payload) {
       Vue.set(state, 'tweets', payload)
     },
+    updateWordSet(state, payload) {
+      Vue.set(state, 'tweetWords', payload)
+    },
     updateWeeklyStatic(state, payload) {
       Vue.set(state, 'weeklyTweet', payload)
     },
@@ -52,7 +58,6 @@ export default new Vuex.Store({
     updateTweetWeekCount(state, payload) {
       Vue.set(state, 'tweetWeekCount', payload)
     },
-    
   },
   actions: {
     async getRecentTweets({ commit, state }) {
@@ -66,12 +71,30 @@ export default new Vuex.Store({
         })
     },
 
+    async getWordSet({ commit, state }) {
+      await axios
+        .get(TWEET_WORD_REQUEST)
+        .then((resp) => {
+          const words = []
+          for (let [key, value] of Object.entries(resp.data.data)) {
+            words.push({
+              name: key,
+              value
+            })
+        }
+
+          commit('updateWordSet', words)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    },
+
     async getWeeklyStatic({ commit, state }) {
       await axios
         .get(WEEKLY_TWEET_REQUEST)
         .then((resp) => {
-          console.log(`weekly-tweet: ${JSON.stringify(resp.data)}`)
-          commit('updateWeeklyStatic', resp.data)
+          commit('updateWeeklyStatic', resp.data.data)
         })
         .catch((err) => {
           console.error(err)
@@ -86,7 +109,6 @@ export default new Vuex.Store({
           }
         })
         .then((resp) => {
-          console.log(`tweet day: ${JSON.stringify(resp.data)}`)
           commit('updateTweetDayCount', resp.data.data)
         })
         .catch((err) => {
@@ -100,7 +122,6 @@ export default new Vuex.Store({
           }
         })
         .then((resp) => {
-          console.log(`tweet week: ${JSON.stringify(resp.data)}`)
           commit('updateTweetWeekCount', resp.data.data)
         })
         .catch((err) => {

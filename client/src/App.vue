@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      Tweets monitoring
+      Tweets for 'PayPay'/'ペイペイ'
     </div>
     <router-view />
   </div>
