@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import operator
 import json
 from sqlalchemy import (
     create_engine, MetaData, Table, Column, ForeignKey,
@@ -26,12 +27,15 @@ session = Session()
 conn = engine.connect()
 
 
-def _as_dict(row):
+def _as_dict(row, created_without_time=False):
     result = dict()
     for key in row.keys():
         if key == 'created_date':
             created = getattr(row, key)
-            result[key] = created.strftime("%Y/%m/%d, %H:%M:%S")
+            if created_without_time:
+                result[key] = created.strftime("%Y/%m/%d")
+            else:
+                result[key] = created.strftime("%Y/%m/%d, %H:%M:%S")
         else:
             result[key] = getattr(row, key)
 
@@ -50,13 +54,47 @@ def fetch_tweet(keyword=None):
                                     .limit(10)
         )
         
-    return [_as_dict(row) for row in result]
+    return [ _as_dict(row) for row in result ]
 
 
-def fetch_by_time(hour=12):
+def fetch_by_time(hour=24):
     since = datetime.now() - timedelta(hours=hour)
     result = session.query(Tweets).filter(Tweets.created_date > since).order_by(Tweets.created_date.desc())
-    return [_as_dict(row) for row in result]
+    return [ _as_dict(row) for row in result ]
+
+
+def weekly_tweet_count():
+    week_time = 24 * 7
+    since = datetime.now() - timedelta(hours=week_time)
+    result = session.query(Tweets.created_date).filter(Tweets.created_date > since).order_by(Tweets.created_date.desc())
+    res_list = [ row.created_date.strftime("%Y/%m/%d") for row in result ]
+    mapped = { x:res_list.count(x) for x in res_list }
+    return mapped
+
+
+def words_count(hour=1):
+    since = datetime.now() - timedelta(hours=hour)
+    filter_word = ['paypay', 'PayPay', 'RT']
+    result = session.query(Tweets.tweet_word_set).filter(Tweets.created_date > since).order_by(Tweets.created_date.desc())
+    res_list = list()
+    for row in result:
+        for word in row.tweet_word_set.split(','):
+            if word not in filter_word:
+                res_list.append(word)
+    
+    mapped = { x:res_list.count(x) for x in res_list }
+    filtered_map = dict(sorted(mapped.items(), key=operator.itemgetter(1), reverse=True)[:10])
+    return filtered_map
+
+
+def popular_user(hour=24):
+    since = datetime.now() - timedelta(hours=hour)
+    result = session.query(Tweets.user_screen_name).filter(Tweets.created_date > since).order_by(Tweets.created_date.desc())
+    res_list = [ row.user_screen_name for row in result ]
+    mapped = { x:res_list.count(x) for x in res_list }
+    filtered_map = dict(sorted(mapped.items(), key=operator.itemgetter(1), reverse=True)[:10])
+    print(filtered_map)
+    pass
 
 
 def update_tweet(tweet_text,

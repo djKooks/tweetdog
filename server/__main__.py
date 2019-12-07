@@ -1,5 +1,4 @@
 import sys
-
 from server.main import main
 
 
