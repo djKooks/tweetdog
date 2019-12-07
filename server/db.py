@@ -47,20 +47,15 @@ def fetch_tweet(keyword=None):
             'SELECT * from tweets ORDER BY created_date DESC LIMIT 10'
         )
     else:
-        result = conn.execute(
-            tweets.select(
-                tweets.c.tweet_text.contains(keyword))
-                                    .order_by(tweets.c.created_date.desc())
-                                    .limit(10)
-        )
+        result = session.query(Tweets).filter(Tweets.tweet_text.contains(keyword)).order_by(Tweets.created_date.desc()).limit(10)
         
     return [ _as_dict(row) for row in result ]
 
 
-def fetch_by_time(hour=24):
+def fetch_count_by_time(hour=24):
     since = datetime.now() - timedelta(hours=hour)
-    result = session.query(Tweets).filter(Tweets.created_date > since).order_by(Tweets.created_date.desc())
-    return [ _as_dict(row) for row in result ]
+    result = session.query(Tweets.id).filter(Tweets.created_date > since).order_by(Tweets.created_date.desc()).count()
+    return result
 
 
 def weekly_tweet_count():
@@ -74,7 +69,7 @@ def weekly_tweet_count():
 
 def words_count(hour=1):
     since = datetime.now() - timedelta(hours=hour)
-    filter_word = ['paypay', 'PayPay', 'RT']
+    filter_word = ['paypay', 'PayPay', 'RT', 'し']
     result = session.query(Tweets.tweet_word_set).filter(Tweets.created_date > since).order_by(Tweets.created_date.desc())
     res_list = list()
     for row in result:
@@ -93,8 +88,7 @@ def popular_user(hour=24):
     res_list = [ row.user_screen_name for row in result ]
     mapped = { x:res_list.count(x) for x in res_list }
     filtered_map = dict(sorted(mapped.items(), key=operator.itemgetter(1), reverse=True)[:10])
-    print(filtered_map)
-    pass
+    return filtered_map
 
 
 def update_tweet(tweet_text,
