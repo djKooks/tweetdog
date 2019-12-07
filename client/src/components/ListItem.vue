@@ -15,7 +15,6 @@ export default class ListItem extends Vue {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .list-item {
   border-radius: 4px;
@@ -29,6 +28,5 @@ export default class ListItem extends Vue {
   .message {
     text-align: left;
   }
-
 }
 </style>
