@@ -12,7 +12,7 @@ from dateutil import parser, tz
 
 from nagisa import extract
 
-from .db import update_tweet, fetch_by_time
+from .db import update_tweet, fetch_count_by_time
 
 
 class Listener(StreamListener):
@@ -42,7 +42,7 @@ class Listener(StreamListener):
 
         # TODO: more elaborate extract logic
         words = extract(tweet_text, extract_postags=['名詞', '形状詞', '動詞', '感動詞'])
-        tweet_word_set = [word for word in words.words if not word.startswith('@') and not word.isnumeric()]
+        tweet_word_set = [ word for word in words.words if not word.startswith('@') and not word.isnumeric() ]
         
         update_tweet(
             tweet_text,

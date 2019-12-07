@@ -67,9 +67,9 @@ def weekly_tweet_count():
     return mapped
 
 
-def words_count(hour=1):
+def words_count(hour=3):
     since = datetime.now() - timedelta(hours=hour)
-    filter_word = ['paypay', 'PayPay', 'RT', 'し']
+    filter_word = ['paypay', 'PayPay', 'RT', 'し', 'Pay', '円', 'ペイ']
     result = session.query(Tweets.tweet_word_set).filter(Tweets.created_date > since).order_by(Tweets.created_date.desc())
     res_list = list()
     for row in result:
@@ -78,7 +78,7 @@ def words_count(hour=1):
                 res_list.append(word)
     
     mapped = { x:res_list.count(x) for x in res_list }
-    filtered_map = dict(sorted(mapped.items(), key=operator.itemgetter(1), reverse=True)[:10])
+    filtered_map = dict(sorted(mapped.items(), key=operator.itemgetter(1), reverse=True)[:20])
     return filtered_map
 
 
