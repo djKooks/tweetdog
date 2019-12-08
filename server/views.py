@@ -66,4 +66,3 @@ async def get_word_set(request):
 @routes.get('/api/test')
 async def get_test_result(request):
     return web.Response("TEST")
-

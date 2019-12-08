@@ -5,7 +5,7 @@ Base = declarative_base()
 
 
 class Tweets(Base):
-    
+
     __tablename__ = 'tweets'
 
     id = Column(Integer, primary_key=True)
@@ -19,14 +19,14 @@ class Tweets(Base):
     created_date = Column(DateTime, nullable=False)
 
     def __init__(self,
-                tweet_text,
-                tweet_word_set, 
-                tweet_link, 
-                user_id, 
-                user_name, 
-                user_screen_name, 
-                user_profile_url, 
-                created_date):
+                 tweet_text,
+                 tweet_word_set,
+                 tweet_link,
+                 user_id,
+                 user_name,
+                 user_screen_name,
+                 user_profile_url,
+                 created_date):
         self.tweet_text = tweet_text
         self.tweet_word_set = tweet_word_set
         self.tweet_link = tweet_link
@@ -37,4 +37,5 @@ class Tweets(Base):
         self.created_date = created_date
 
     def __repr__(self):
-        return "<Tweets('%s', '%s', '%s')>" % (self.user_name, self.created_date, self.tweet_text)
+        return "<Tweets('%s', '%s', '%s')>" % (
+            self.user_name, self.created_date, self.tweet_text)
