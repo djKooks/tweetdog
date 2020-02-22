@@ -1,6 +1,6 @@
 from aiohttp import web
 
-from .db import fetch_tweet, fetch_count_by_time, popular_user, weekly_tweet_count, words_count
+from .db import fetch_tweet, fetch_count_by_time, popular_user, tweet_count_by_time, words_count
 
 
 routes = web.RouteTableDef()
@@ -21,19 +21,6 @@ class RecentTweets(web.View):
 @routes.get('/api/tweets-count')
 class TweetsCount(web.View):
     async def get(self):
-        kwd = None
-        if 'keyword' in self.request.rel_url.query:
-            kwd = self.request.rel_url.query['keyword']
-
-        data = fetch_tweet(kwd)
-
-        return web.json_response(data)
-
-
-@routes.get('/api/weekly-static')
-class WeeklyStatic(web.View):
-
-    async def get(self):
         resp = dict()
         if 'day' in self.request.rel_url.query:
             range_day = self.request.rel_url.query['day']
@@ -46,6 +33,19 @@ class WeeklyStatic(web.View):
             resp = {
                 'result': 'FAIL'
             }
+
+        return web.json_response(resp)
+
+
+@routes.get('/api/weekly-static')
+class WeeklyStatic(web.View):
+
+    async def get(self):
+        weekly_data = tweet_count_by_time('week')
+        resp = {
+            'result': 'OK',
+            'data': weekly_data
+        }
 
         return web.json_response(resp)
 

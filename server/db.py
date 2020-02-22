@@ -64,21 +64,28 @@ def fetch_count_by_time(hour=24):
     return result
 
 
-def weekly_tweet_count():
-    week_time = 24 * 7
-    since = datetime.now() - timedelta(hours=week_time)
+def tweet_count_by_time(key='week'):
+    time = 24
+    date_key = '%d/%H'
+    if key is 'week':
+        time = time * 7
+        date_key = '%Y/%m/%d'
+
+    since = datetime.now() - timedelta(hours=time)
     result = session.query(
         Tweets.created_date).filter(
         Tweets.created_date > since).order_by(
             Tweets.created_date.desc())
-    res_list = [row.created_date.strftime("%Y/%m/%d") for row in result]
+
+    res_list = [row.created_date.strftime(date_key) for row in result]
     mapped = {x: res_list.count(x) for x in res_list}
     return mapped
 
 
 def words_count(hour=3):
     since = datetime.now() - timedelta(hours=hour)
-    filter_word = ['paypay', 'PayPay', 'RT', 'し', 'Pay', '円', 'ペイ']
+    filter_word = ['paypay', 'PayPay', 'RT', 'し', 'Pay', '円', 'ペイ',
+                   'フォロー', '名', 'PayPayOfficial', 'いう', 'ツイ', '登録', '企画']
     result = session.query(
         Tweets.tweet_word_set).filter(
         Tweets.created_date > since).order_by(
