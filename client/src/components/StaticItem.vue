@@ -7,31 +7,28 @@
       <span class="count-value">
         {{ this.dayCount }}
       </span>
-       tweets per day
+      tweets per day
     </div>
     <div class="count">
       <span class="count-value">
         {{ this.weekCount }}
       </span>
-       tweets per week
+      tweets per week
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component
 export default class StaticItem extends Vue {
-  @Prop() private dayCount!: number;
-  @Prop() private weekCount!: number;
+  @Prop() private dayCount!: number
+  @Prop() private weekCount!: number
 
   unit: string = ''
 
-  mounted() {
-
-  }
-  
+  mounted() {}
 }
 </script>
 
@@ -52,7 +49,7 @@ export default class StaticItem extends Vue {
   .count {
     padding: 10px;
     text-align: right;
-    
+
     .count-value {
       font-size: 32px;
       color: #00acee;
