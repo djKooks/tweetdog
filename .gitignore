@@ -3,4 +3,8 @@ venv/
 __pycache__/
 *.pyc
 
+.idea/
+.vscode/
+
 server/config.json
+server/db.yaml

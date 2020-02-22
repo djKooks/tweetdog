@@ -5,7 +5,6 @@ Base = declarative_base()
 
 
 class Tweets(Base):
-
     __tablename__ = 'tweets'
 
     id = Column(Integer, primary_key=True)

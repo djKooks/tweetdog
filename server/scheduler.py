@@ -1,5 +1,4 @@
 import atexit
-import asyncio
 import json
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -11,8 +10,7 @@ from tweepy.streaming import StreamListener
 from dateutil import parser, tz
 
 from nagisa import extract
-
-from .db import update_tweet, fetch_count_by_time
+from .db import update_tweet
 
 
 class Listener(StreamListener):
@@ -24,7 +22,7 @@ class Listener(StreamListener):
         return True
 
     def on_error(self, status):
-        print(status)
+        print('ERROR:' + status)
 
     def __write_db__(self, all_data):
         tweet_text = ''
@@ -43,6 +41,7 @@ class Listener(StreamListener):
                 all_data['entities']['urls']) > 0:
             tweet_link = all_data['entities']['urls'][0]['url']
 
+        print(' > receive tweet: ')
         # TODO: more elaborate extract logic
         words = extract(tweet_text, extract_postags=['名詞', '形状詞', '動詞', '感動詞'])
         tweet_word_set = [word for word in words.words if not word.startswith(

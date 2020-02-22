@@ -48,9 +48,9 @@ def fetch_tweet(keyword=None):
             'SELECT * from tweets ORDER BY created_date DESC LIMIT 10'
         )
     else:
-        result = session.query(Tweets).filter(
-            Tweets.tweet_text.contains(keyword)).order_by(
-            Tweets.created_date.desc()).limit(10)
+        result = conn.execute(
+            "SELECT * FROM tweets WHERE tweet_word_set LIKE %s ORDER BY created_date DESC LIMIT 10", ("%" + keyword + "%",)
+        )
 
     return [_as_dict(row) for row in result]
 
@@ -136,4 +136,11 @@ def update_tweet(tweet_text,
         created_date=created_date)
     )
 
+    try:
+        session.commit()
+    except:
+        # ignore error
+        pass
+
+    # continue using session without rolling back
     session.commit()
