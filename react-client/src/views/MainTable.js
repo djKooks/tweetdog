@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { Transition } from 'react-transition-group'
 // import { Chart } from 'react-google-charts'
 
@@ -7,10 +9,18 @@ import ListItem from '../components/ListItem'
 
 import './MainTable.css'
 
+import { fetchRecentTweetsWhenAvailable } from '../actions'
 
-export default class MainTable extends React.Component {
+
+class MainTable extends React.Component {
+  componentDidMount() {
+    const { dispatch } = this.props
+    dispatch(fetchRecentTweetsWhenAvailable())
+  }
 
   render() {
+    const { data } = this.props
+    console.log(`fetch render: ${JSON.stringify(data)}`)
     return (
       <div class="home">
         <div class="tweet-list">
@@ -31,3 +41,26 @@ export default class MainTable extends React.Component {
     )
   }
 }
+
+MainTable.propTypes = {
+  data: PropTypes.array.isRequired,
+  dispatch: PropTypes.func.isRequired
+}
+
+function mapStateToProps(state) {
+  const { fetchRecentTweets } = state
+  const {
+    isFetching,
+    data
+  } = fetchRecentTweets || {
+    isFetching: true,
+    data: []
+  }
+
+  return {
+    data,
+    isFetching
+  }
+}
+
+export default connect(mapStateToProps)(MainTable)

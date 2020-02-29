@@ -24,7 +24,7 @@ export function fetchRecentTweets() {
   return dispatch => {
     dispatch(requestRecentTweets())
     
-    return await axios
+    return axios
       .get(RECENT_TWEETS_REQUEST)
       .then(resp => {
         dispatch(receiveRecentTweets(resp.data))
@@ -32,6 +32,12 @@ export function fetchRecentTweets() {
       .catch(err => {
         console.error(err)
       })
+  }
+}
+
+export function fetchRecentTweetsWhenAvailable() {
+  return (dispatch, getState) => {
+    return dispatch(fetchRecentTweets())
   }
 }
 

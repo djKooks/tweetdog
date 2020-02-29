@@ -1,5 +1,5 @@
-import React from 'react';
-import './App.css';
+import React from 'react'
+import './App.css'
 
 import MainTable from './views/MainTable'
 
@@ -8,7 +8,7 @@ function App() {
     <div className="App">
       <MainTable />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
