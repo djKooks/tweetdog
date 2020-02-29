@@ -1,0 +1,35 @@
+.home {
+  display: flex;
+}
+
+.home .tweet-list {
+  margin: 0 10px;
+  width: 30%;
+  background-color: #eeeeee;
+}
+
+.home .title {
+  padding: 10px 0;
+  background-color: #00acee;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.home .update-list-move {
+  transition: transform 1s;
+}
+
+.home .chart {
+  margin: 10px;
+}
+
+.home .content {
+  border-radius: 4px;
+  margin: 10px 5px;
+  background-color: #ffffff;
+}
+
+.home .no-content {
+  margin: 20px;
+  font-weight: 700;
+}

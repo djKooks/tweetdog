@@ -1,0 +1,13 @@
+.list-item {
+  border-radius: 4px;
+  margin: 10px 5px;
+  background-color: #ffffff;
+}
+
+.list-item .date {
+  border-bottom: 1px solid #aaaaaa;
+}
+
+.list-item .message {
+  text-align: left;
+}
