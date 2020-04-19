@@ -41,11 +41,11 @@ RecentTweets.propTypes = {
 }
 
 function mapStateToProps(state) {
-  const { fetchRecentTweets } = state
+  const { recentTweetsState } = state
   const {
     isFetching,
     data
-  } = fetchRecentTweets || {
+  } = recentTweetsState || {
     isFetching: true,
     data: []
   }

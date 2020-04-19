@@ -4,31 +4,34 @@ import { connect } from 'react-redux'
 
 import BarChart from '../components/BarChart'
 
-import { fetchRecentTweetsWhenAvailable } from '../actions'
+import { fetchPopularUsers } from '../actions'
 
 
 class PopularUsers extends React.Component {
 
   componentWillMount() {
+    const { dispatch } = this.props
+    dispatch(fetchPopularUsers())
   }
 
   render() {
+    const { data } = this.props
+    console.log(data)
     return <div><BarChart /></div>
   }
 }
 
-/*
-RecentTweets.propTypes = {
+PopularUsers.propTypes = {
   data: PropTypes.array.isRequired,
   dispatch: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {
-  const { fetchRecentTweets } = state
+  const { popularUsersState } = state
   const {
     isFetching,
     data
-  } = fetchRecentTweets || {
+  } = popularUsersState || {
     isFetching: true,
     data: []
   }
@@ -40,6 +43,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(PopularUsers)
-*/
-export default PopularUsers
-

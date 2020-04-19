@@ -4,31 +4,34 @@ import { connect } from 'react-redux'
 
 import LineChart from '../components/LineChart'
 
-import { fetchRecentTweetsWhenAvailable } from '../actions'
+import { fetchWeeklyTweetsWhenAvailable } from '../actions'
 
 
 class TweetCounts extends React.Component {
 
   componentWillMount() {
+    const { dispatch } = this.props
+    dispatch(fetchWeeklyTweetsWhenAvailable())
   }
 
   render() {
+    const { data } = this.props
+    console.log(data)
     return <div><LineChart /></div>
   }
 }
 
-/*
-RecentTweets.propTypes = {
+TweetCounts.propTypes = {
   data: PropTypes.array.isRequired,
   dispatch: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {
-  const { fetchRecentTweets } = state
+  const { weeklyTweetsState } = state
   const {
     isFetching,
     data
-  } = fetchRecentTweets || {
+  } = weeklyTweetsState || {
     isFetching: true,
     data: []
   }
@@ -39,7 +42,5 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(PopularUsers)
-*/
-export default TweetCounts
+export default connect(mapStateToProps)(TweetCounts)
 
