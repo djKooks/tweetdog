@@ -14,15 +14,29 @@ class PopularUsers extends React.Component {
     dispatch(fetchPopularUsers())
   }
 
+  keyForBarChart(org) {
+    let barData = []
+    Object.entries(org).forEach(el => {
+      barData.push(el[0])
+    })
+
+    return barData
+  }
+
   render() {
     const { data } = this.props
-    console.log(data)
-    return <div><BarChart /></div>
+
+    if (!data) {
+      return <div></div>
+    }
+
+    const barKey = this.keyForBarChart(data.data)
+    return <div><BarChart barKey={barKey} barData={[data.data]} /></div>
   }
 }
 
 PopularUsers.propTypes = {
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array,
   dispatch: PropTypes.func.isRequired
 }
 

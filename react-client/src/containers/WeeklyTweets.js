@@ -14,15 +14,37 @@ class TweetCounts extends React.Component {
     dispatch(fetchWeeklyTweetsWhenAvailable())
   }
 
+  dataToLineData(org) {
+    let lineData = {
+      id: "tweets",
+      color: "hsl(72, 70%, 50%)",
+      data: []
+    }
+
+    Object.entries(org).forEach(el => {
+      lineData.data.push({
+        x: el[0],
+        y: el[1]
+      })
+    })
+
+    return lineData
+  }
+
   render() {
     const { data } = this.props
-    console.log(data)
-    return <div><LineChart /></div>
+    if (!data) {
+      return <div></div>
+    }
+
+    const lineData = this.dataToLineData(data.data)
+
+    return <div><LineChart chartData={[lineData]} /></div>
   }
 }
 
 TweetCounts.propTypes = {
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array,
   dispatch: PropTypes.func.isRequired
 }
 

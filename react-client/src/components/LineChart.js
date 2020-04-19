@@ -3,11 +3,11 @@ import { ResponsiveLine } from '@nivo/line'
 
 import './LineChart.css'
 
-const LineChart = ({ /* see data tab */ }) => {
+const LineChart = ({ chartData }) => {
   return (
     <div class="line-chart">
       <ResponsiveLine
-        data={tempData}
+        data={chartData}
         margin={{ top: 30, right: 30, bottom: 30, left: 30 }}
         xScale={{ type: 'point' }}
         yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}

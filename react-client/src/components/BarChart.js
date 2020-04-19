@@ -4,13 +4,13 @@ import { ResponsiveBar } from '@nivo/bar'
 
 import './BarChart.css'
 
-const BarChart = (props) => {
+const BarChart = ({ barKey, barData }) => {
   return (
     <div class="bar-chart">
       <ResponsiveBar
-        data={tempData}
-        keys={['hot dog', 'burger', 'sandwich', 'kebab', 'fries', 'donut']}
-        indexBy="country"
+        data={barData}
+        keys={barKey}
+        indexBy="user"
         margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
         padding={0.3}
         groupMode="grouped"
@@ -35,20 +35,7 @@ const BarChart = (props) => {
             spacing: 10
           }
         ]}
-        fill={[
-          {
-            match: {
-              id: 'fries'
-            },
-            id: 'dots'
-          },
-          {
-            match: {
-              id: 'sandwich'
-            },
-            id: 'lines'
-          }
-        ]}
+
         borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
         axisTop={null}
         axisRight={null}
@@ -56,7 +43,7 @@ const BarChart = (props) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'country',
+          legend: 'user',
           legendPosition: 'middle',
           legendOffset: 32
         }}
@@ -64,7 +51,7 @@ const BarChart = (props) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'food',
+          legend: 'tweets',
           legendPosition: 'middle',
           legendOffset: -40
         }}

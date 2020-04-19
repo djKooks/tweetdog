@@ -36,7 +36,7 @@ class RecentTweets extends React.Component {
 }
 
 RecentTweets.propTypes = {
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array,
   dispatch: PropTypes.func.isRequired
 }
 

@@ -114,3 +114,10 @@ export function fetchWeeklyTweetsWhenAvailable() {
   }
 }
 
+export function fetchPopularUsersWhenAvailable() {
+  return (dispatch, getState) => {
+    return dispatch(fetchPopularUsers())
+  }
+}
+
+
