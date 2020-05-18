@@ -1,9 +1,7 @@
-aiohttp
-aiohttp_cors
+django
+djangorestframework
+mysqlclient
 
-sqlalchemy
-PyMySQL
-aiomysql
 cryptography
 
 apscheduler
