@@ -41,7 +41,7 @@ class Listener(StreamListener):
                 all_data['entities']['urls']) > 0:
             tweet_link = all_data['entities']['urls'][0]['url']
 
-        print(' > receive tweet: ')
+        print(' > receive tweet in ' + all_data['created_at'] + ': ')
         # TODO: more elaborate extract logic
         words = extract(tweet_text, extract_postags=['名詞', '形状詞', '動詞', '感動詞'])
         tweet_word_set = [word for word in words.words if not word.startswith(

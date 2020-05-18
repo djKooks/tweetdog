@@ -3,6 +3,7 @@ aiohttp_cors
 
 sqlalchemy
 PyMySQL
+aiomysql
 cryptography
 
 apscheduler

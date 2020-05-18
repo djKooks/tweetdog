@@ -1,6 +1,7 @@
 from aiohttp import web
 import aiohttp_cors
 
+from .db import init
 from .scheduler import start_scheduler, tweet_stream
 from .views import routes
 
@@ -20,6 +21,7 @@ cors = aiohttp_cors.setup(app, defaults={
 for route in list(app.router.routes()):
     cors.add(route)
 
+init()
 start_scheduler()
 
 web.run_app(app, port=5000, access_log=None)

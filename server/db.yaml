@@ -1,7 +1,6 @@
 mysql:
   database: tweet_search
-  user: db-user-name
-  password: db-user-password
-  host: db-host
-  port: db-port
-  
+  user: root
+  password: root
+  host: 127.0.0.1
+  port: 3306

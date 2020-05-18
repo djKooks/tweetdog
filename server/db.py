@@ -43,25 +43,37 @@ def _as_dict(row, created_without_time=False):
 
 
 def fetch_tweet(keyword=None):
+    result = []
     if keyword is None:
-        result = conn.execute(
-            'SELECT * from tweets ORDER BY created_date DESC LIMIT 10'
-        )
+        result = session.query(
+            Tweets.id,
+            Tweets.tweet_text,
+            Tweets.tweet_link,
+            Tweets.created_date,
+        ).order_by(Tweets.created_date.desc()).limit(10)
     else:
-        result = conn.execute(
-            "SELECT * FROM tweets WHERE tweet_word_set LIKE %s ORDER BY created_date DESC LIMIT 10", ("%" + keyword + "%",)
-        )
+        result = session.query(
+            Tweets.id,
+            Tweets.tweet_text,
+            Tweets.tweet_link,
+            Tweets.created_date,
+        ).filter(Tweets.tweet_text.contains(keyword)).order_by(Tweets.created_date.desc()).limit(5)
 
     return [_as_dict(row) for row in result]
 
 
 def fetch_count_by_time(hour=24):
     since = datetime.now() - timedelta(hours=hour)
-    result = session.query(
-        Tweets.id).filter(
-        Tweets.created_date > since).order_by(
-            Tweets.created_date.desc()).count()
-    return result
+    try:
+        result = session.query(
+            Tweets.id).filter(
+            Tweets.created_date > since).order_by(
+                Tweets.created_date.desc()).count()
+        session.commit()
+        return result
+    except:
+        session.rollback()
+        raise
 
 
 def tweet_count_by_time(key='week'):
@@ -72,24 +84,37 @@ def tweet_count_by_time(key='week'):
         date_key = '%Y/%m/%d'
 
     since = datetime.now() - timedelta(hours=time)
-    result = session.query(
-        Tweets.created_date).filter(
-        Tweets.created_date > since).order_by(
-            Tweets.created_date.desc())
 
-    res_list = [row.created_date.strftime(date_key) for row in result]
-    mapped = {x: res_list.count(x) for x in res_list}
-    return mapped
+    try:
+        result = session.query(
+            Tweets.created_date).filter(
+            Tweets.created_date > since).order_by(
+                Tweets.created_date.desc())
+        session.commit()
+
+        res_list = [row.created_date.strftime(date_key) for row in result]
+        mapped = {x: res_list.count(x) for x in res_list}
+        return mapped
+    except:
+        session.rollback()
+        raise
 
 
 def words_count(hour=3):
     since = datetime.now() - timedelta(hours=hour)
     filter_word = ['paypay', 'PayPay', 'RT', 'し', 'Pay', '円', 'ペイ',
                    'フォロー', '名', 'PayPayOfficial', 'いう', 'ツイ', '登録', '企画']
-    result = session.query(
-        Tweets.tweet_word_set).filter(
-        Tweets.created_date > since).order_by(
-            Tweets.created_date.desc())
+    result = []
+    try:
+        result = session.query(
+            Tweets.tweet_word_set).filter(
+            Tweets.created_date > since).order_by(
+                Tweets.created_date.desc())
+        session.commit()
+    except:
+        session.rollback()
+        raise
+
     res_list = list()
     for row in result:
         for word in row.tweet_word_set.split(','):
@@ -108,10 +133,18 @@ def words_count(hour=3):
 
 def popular_user(hour=24):
     since = datetime.now() - timedelta(hours=hour)
-    result = session.query(
-        Tweets.user_screen_name).filter(
-        Tweets.created_date > since).order_by(
-            Tweets.created_date.desc())
+
+    result = []
+    try:
+        result = session.query(
+            Tweets.user_screen_name).filter(
+            Tweets.created_date > since).order_by(
+                Tweets.created_date.desc())
+        session.commit()
+    except:
+        session.rollback()
+        raise
+
     res_list = [row.user_screen_name for row in result]
     mapped = {x: res_list.count(x) for x in res_list}
     filtered_map = dict(
@@ -146,8 +179,4 @@ def update_tweet(tweet_text,
     try:
         session.commit()
     except:
-        # ignore error
-        pass
-
-    # continue using session without rolling back
-    session.commit()
+        session.rollback()
