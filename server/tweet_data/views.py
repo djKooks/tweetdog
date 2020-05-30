@@ -8,7 +8,7 @@ from .serializer import PopularUserSerializer, RecentTweetSerializer
 
 class RecentTweets(APIView):
     """
-
+    # TODO
     """
     @staticmethod
     def get(request):
@@ -24,7 +24,7 @@ class RecentTweets(APIView):
 
 class TweetsCount(APIView):
     """
-
+    # TODO
     """
 
     @staticmethod
@@ -51,7 +51,7 @@ class TweetsCount(APIView):
 
 class PopularUsers(APIView):
     """
-
+    # TODO
     """
 
     @staticmethod
@@ -67,7 +67,7 @@ class PopularUsers(APIView):
 
 class WeeklyCount(APIView):
     """
-
+    # TODO
     """
     @staticmethod
     def get(request):
@@ -84,7 +84,7 @@ class WeeklyCount(APIView):
 
 class WordCounter(APIView):
     """
-
+    # TODO
     """
 
     @staticmethod

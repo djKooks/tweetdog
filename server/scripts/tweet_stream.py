@@ -1,7 +1,4 @@
-import atexit
 import json
-
-from apscheduler.schedulers.background import BackgroundScheduler
 
 from tweepy import Stream
 from tweepy import OAuthHandler
@@ -10,11 +7,16 @@ from tweepy.streaming import StreamListener
 from dateutil import parser, tz
 
 from nagisa import extract
-from .db import update_tweet
+
+# from tweet_data.model import Tweets
+from tweet_data.models import Tweets
 
 
 class Listener(StreamListener):
+    """
+    - Tweet stream listener
 
+    """
     def on_data(self, data):
         all_data = json.loads(data)
         self.__write_db__(all_data)
@@ -41,39 +43,35 @@ class Listener(StreamListener):
                 all_data['entities']['urls']) > 0:
             tweet_link = all_data['entities']['urls'][0]['url']
 
-        print(' > receive tweet in ' + all_data['created_at'] + ': ')
+        print(' >>> receive tweet in ' + all_data['created_at'] + ': ')
+
         # TODO: more elaborate extract logic
         words = extract(tweet_text, extract_postags=['名詞', '形状詞', '動詞', '感動詞'])
-        tweet_word_set = [word for word in words.words if not word.startswith(
-            '@') and not word.isnumeric()]
+        tweet_word_set = [
+            word for word in words.words if not word.startswith('@') and not word.isnumeric()
+        ]
 
-        update_tweet(
-            tweet_text,
-            ','.join(tweet_word_set),
-            tweet_link,
-            user['id_str'],
-            user['name'],
-            user['screen_name'],
-            user['profile_image_url'],
-            created_dt
-        )
+        tweets = Tweets()
+        tweets.tweet_text = tweet_text
+        tweets.tweet_word_set = ','.join(tweet_word_set)
+        tweets.tweet_link = tweet_link
+        tweets.user_id = user['id_str']
+        tweets.user_name = user['name']
+        tweets.user_screen_name = user['screen_name']
+        tweets.user_profile_url = user['profile_image_url']
+        tweets.created_date = created_dt
+
+        tweets.save()
 
 
-def tweet_stream():
-    with open('server/config.json') as conf:
+def run():
+    print('run bg task')
+    with open('scripts/config.json') as conf:
         config = json.load(conf)
         auth = OAuthHandler(config['CONSUMER_KEY'], config['CONSUMER_SECRET'])
         auth.set_access_token(
             config['ACCESS_TOKEN_KEY'],
             config['ACCESS_TOKEN_SECRET'])
+
         twitterStream = Stream(auth, Listener())
         twitterStream.filter(track=config['TRACK_KEYWORD_SET'], is_async=True)
-
-
-def start_scheduler():
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(func=tweet_stream)
-    scheduler.start()
-
-    # Shut down the scheduler when exiting the app
-    atexit.register(lambda: scheduler.shutdown())
