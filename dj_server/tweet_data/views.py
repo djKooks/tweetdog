@@ -5,8 +5,6 @@ from rest_framework.response import Response
 from .models import Tweets
 from .serializer import PopularUserSerializer, RecentTweetSerializer
 
-# Create your views here.
-
 
 class RecentTweets(APIView):
     """
@@ -51,7 +49,6 @@ class TweetsCount(APIView):
         return Response(resp)
 
 
-
 class PopularUsers(APIView):
     """
 
@@ -59,13 +56,52 @@ class PopularUsers(APIView):
 
     @staticmethod
     def get(request):
-        since = datetime.now() - timedelta(hours=3)
+        since = datetime.now() - timedelta(hours=24)
         query_set = Tweets.objects \
             .filter(created_date__gte=since)\
-            .values_list('user_id', 'user_name').annotate(user_count=Count('user_id')).order_by('-user_count')[:10]
+            .annotate(user_count=Count('user_id')).order_by('-user_count')[:10]
 
-        print(query_set)
-        serialize = PopularUserSerializer(query_set, many=True)
-        return Response(serialize)
+        serialized = PopularUserSerializer(query_set, many=True)
+        return Response(serialized.data)
 
 
+class WeeklyCount(APIView):
+    """
+
+    """
+    @staticmethod
+    def get(request):
+        range_hour = 24 * 7
+        date_key = '%m/%d'
+
+        since = datetime.now() - timedelta(hours=range_hour)
+        query_list = Tweets.objects.filter(created_date__gte=since)
+        res_list = [row.created_date.strftime(date_key) for row in query_list]
+        mapped = {x: res_list.count(x) for x in res_list}
+
+        return Response(mapped)
+
+
+class WordCounter(APIView):
+    """
+
+    """
+
+    @staticmethod
+    def get(request):
+        range_hour = 24
+        since = datetime.now() - timedelta(hours=range_hour)
+        filter_word = ['paypay', 'PayPay', 'RT', 'し', 'Pay', '円', 'ペイ',
+                       'フォロー', '名', 'PayPayOfficial', 'いう', 'ツイ', '登録', '企画']
+
+        query_list = Tweets.objects.filter(created_date__gte=since).values('tweet_word_set')
+        res_list = list()
+        for row in query_list:
+            for word in row['tweet_word_set'].split(','):
+                if word not in filter_word:
+                    res_list.append(word)
+
+        # TODO: optimize the logic!
+        mapped = {x: res_list.count(x) for x in res_list}
+
+        return Response(mapped)

@@ -5,16 +5,14 @@ Tweet stream monitoring board
 
 #### initiate database
 ```
-python init_db.py
+$ python makemigration
+...
+$ python migrate
 ```
 
 #### run web server
 ```
-$ python -m server
-```
-
-```
-$ python manage.py runscript tweet_stream && python manage.py runserver
+$ python manage.py runscript tweet_stream & python manage.py runserver
 ```
 
 #### start client
