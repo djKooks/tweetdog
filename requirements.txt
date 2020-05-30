@@ -1,6 +1,7 @@
 django
 djangorestframework
 mysqlclient
+django-background-tasks
 
 cryptography
 

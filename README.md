@@ -13,6 +13,10 @@ python init_db.py
 $ python -m server
 ```
 
+```
+$ python manage.py runscript tweet_stream && python manage.py runserver
+```
+
 #### start client
 ```
 $ cd client

@@ -6,5 +6,5 @@ __pycache__/
 .idea/
 .vscode/
 
-server/config.json
+dj_server/scripts/config.json
 server/db.yaml
