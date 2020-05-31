@@ -1,7 +1,0 @@
-mysql:
-  database: tweet_search
-  user: db-user-name
-  password: db-user-password
-  host: db-host
-  port: db-port
-  

@@ -14,7 +14,13 @@ class RecentTweets extends React.Component {
 
   componentWillMount() {
     const { dispatch } = this.props
-    dispatch(fetchRecentTweetsWhenAvailable())
+    this.timer = setInterval(() =>
+      dispatch(fetchRecentTweetsWhenAvailable()), 4000
+    );
+  }
+
+  componentWillUnmount() {
+    this.timer = null
   }
 
   render() {
@@ -22,12 +28,13 @@ class RecentTweets extends React.Component {
     if (!data) {
       return <div></div>
     }
+    console.log(data)
 
     return (
       <div>
         {
           data.map(tweet => {
-            return <ListItem date={tweet.created_date} msg={tweet.tweet_text} />
+            return <ListItem key={tweet.id} date={tweet.created_date} msg={tweet.tweet_text} />
           })
         }
       </div>
